@@ -1,4 +1,5 @@
 var puntaje = 0;
+var gameover = false;
 
 var ciclos = 0;
 var iteraciones = 1;
@@ -17,8 +18,6 @@ window.onload=function(){
 	if(canvas && canvas.getContext){
 		context = canvas.getContext("2d");
 		if(context){
-			pintarMapa();
-			ponerComida();
 			imagen = new Image();
 			imagen.src = "img/sprites.png";
 			imagen.onload = function(){
@@ -65,23 +64,35 @@ function animar(){
 		iteraciones++;
 
 	}
+	
+	if(!gameover){
+		moverPacman();
+		moverFantasma1();
+		moverFantasma2();
+	}
+	comer(pos_pacman);
+	ponerPuntaje();
 
-	if(!colision(pos_pacman, pacDireccion)){
-		if(pos_pacman[1] % 16 == 0){
-			if(pacDireccion == 0) pos_pacman[0]+=2;
-			if(pacDireccion == 1) pos_pacman[0]-=2;
-		}
-		if(pos_pacman[0] % 16 == 0){
-			if(pacDireccion == 2) pos_pacman[1]-=2;
-			if(pacDireccion == 3) pos_pacman[1]+=2;
+	if(colisionFantasma(pos_fantasmas[0])){
+		if(fantasmaComer){
+			pos_fantasmas[0] = [192,224];
+			puntaje += 200;
+			fantasmaComer = false;
+		}else{
+			gameover = true;
 		}
 	}
 
-	moverFantasma1();
-	moverFantasma2();
+	if(colisionFantasma(pos_fantasmas[1])){
+		if(fantasmaComer){
+			pos_fantasmas[1] = [192,224];
+			puntaje += 200;
+			fantasmaComer = false;
+		}else{
+			gameover = true;
+		}
+	}
 
-	comer(pos_pacman, pos_fantasmas);
-	ponerPuntaje();
 }
 
 document.addEventListener("keydown",function(e){

@@ -1,5 +1,3 @@
-var fantasmaComer = false;
-
 // Comida normal
 var comida = [
 	[2,2],[3,2],[4,2],[5,2],[6,2],[7,2],[8,2],[9,2],[10,2],[11,2],[12,2],[16,2],[17,2],[18,2],[19,2],[20,2],[21,2],[22,2],[23,2],[24,2],[25,2],[26,2],
@@ -59,7 +57,7 @@ function ponerComida(){
 	}
 }
 
-function comer(pos, posfantasma){
+function comer(pos){
 	// centro del pacman
 	var posX = pos[0]+16;
 	var posY = pos[1]+16;
@@ -67,34 +65,16 @@ function comer(pos, posfantasma){
 	for(var i=0; i<comida.length; i++){
 		if(posX == comida[i][0] && posY == comida[i][1]){
 			comida.splice(i,1);
-			puntaje += 50;
+			puntaje += 10;
 		}
 	}
 
 	for(var i=0; i<comidaGrande.length; i++){
 		if(posX == comidaGrande[i][0] && posY == comidaGrande[i][1]){
 			comidaGrande.splice(i,1);
-			puntaje += 500;
+			puntaje += 100;
 
 			fantasmaComer = true;
-		}
-	}
-
-	if(fantasmaComer){
-		for(var i=0; i<posfantasma.length; i++){
-			if(Math.trunc(posX-16/16) == Math.trunc(posfantasma[i][0]/16) && Math.trunc(posY-16/16) == Math.trunc(posfantasma[i][1]/16)){
-				posfantasma[i] = [192,224];
-				puntaje += 1000;
-				alert();
-
-				fantasmaComer = false;
-			}
-		}
-	}else{
-		for(var i=0; i<posfantasma.length; i++){
-			if(Math.trunc(posX-16/16) == Math.trunc(posfantasma[i][0]/16) && Math.trunc(posY-16/16) == Math.trunc(posfantasma[i][1]/16)){
-				var gameover = true;
-			}
 		}
 	}
 }

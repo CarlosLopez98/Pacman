@@ -1,6 +1,7 @@
 var pos_fantasmas = [[192,224],[224,224]];
 var fan1Direccion = 0;
 var fan2Direccion = 0;
+var fantasmaComer = false;
 
 fantasma1 = [
 	[[0,4],[1,4]], //derecha
