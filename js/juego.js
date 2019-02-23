@@ -1,11 +1,17 @@
 var jugando;
+var menu;
+var gameover;
+var puntajeFinal;
 var mensaje;
 var cont;
 
 inicio();
 
 function inicio(){
-	jugando = true;
+	menu = true
+	jugando = false;
+	gameover = false;
+	puntajeFinal = false;
 
 	canvas = document.getElementById('micanvas');
 	canvas.width = 448;
@@ -31,9 +37,23 @@ function run(){
 	buffer.height = canvas.height;
 	contextoBuffer = buffer.getContext("2d");
 
-	// menu
-	bloques.pintarMapa(contextoBuffer);
-	ponerMenu(contextoBuffer);
+	if(menu){
+		contextoBuffer.clearRect(0,0,buffer.width,buffer.height);
+
+		bloques.pintarMapa(contextoBuffer);
+		comida.ponerComida(contextoBuffer);
+		pacman.pintarPacman(contextoBuffer);
+
+		ponerMenu(contextoBuffer, true);
+		$('#micanvas').click(function(){
+			menu = false;
+			jugando = true;
+			cont = 0;
+		});
+		
+		contexto.clearRect(0,0,canvas.width,canvas.height);
+		contexto.drawImage(buffer, 0, 0);	
+	}
 		 
 	if(jugando){
 		// Juego
@@ -52,85 +72,91 @@ function run(){
 		}
 
 		pacman.pintarPacman(contextoBuffer);
+		pacman.moverPacman();
 
-		if(menu){
-			ponerMenu(contextoBuffer);
-			$('#micanvas').click(function(){menu = false;});
-		}
+		for(var i=0; i<fantasmas.length; i++){
+			fantasmas[i].pintarFantasma(contextoBuffer);
+			fantasmas[i].moverFantasma();
 
-		if(!menu){
-			pacman.moverPacman();
-
-			for(var i=0; i<fantasmas.length; i++){
-				fantasmas[i].pintarFantasma(contextoBuffer);
-				fantasmas[i].moverFantasma();
-
-				if(fantasmaComer){
-					// Pacman comio la galleta grande y los fantasmas pasan a su forma debil
-					fantasmas[i].estado = false;
-				}
-				
-				// Colision de pacman con los fantasmas
-				if(pacman.colisionFantasma(fantasmas[i].pos_fantasma)){
-					if(fantasmas[i].estado){
-						// Cuando colisionan en la forma normal de los fantasmas
-						jugando = false;
-					}else{
-						// Cuando estan en su forma debil, se reinicia al fantasma en cuestion en la base
-						fantasmas[i].reiniciar();
-						puntaje += 200;
-					}
-				}
-
-				// Tiempo de recuperacion de los fantasmas a su forma normal
-				if(!fantasmas[i].estado){
-					if(cont % 2000 == 0){
-						fantasmas[i].estado = true;
-					}
+			if(fantasmaComer){
+				// Pacman comio la galleta grande y los fantasmas pasan a su forma debil
+				fantasmas[i].estado = false;
+			}
+			
+			// Colision de pacman con los fantasmas
+			if(pacman.colisionFantasma(fantasmas[i].pos_fantasma)){
+				if(fantasmas[i].estado){
+					// Cuando colisionan en la forma normal de los fantasmas
+					jugando = false;
+					gameover = true;
+				}else{
+					// Cuando estan en su forma debil, se reinicia al fantasma en cuestion en la base
+					fantasmas[i].reiniciar();
+					puntaje += 200;
 				}
 			}
 
-			ponerPuntaje(contextoBuffer);
+			// Tiempo de recuperacion de los fantasmas a su forma normal
+			if(!fantasmas[i].estado){
+				if(cont % 1200 == 0){
+					fantasmas[i].estado = true;
+				}
+			}
 		}
+
+		ponerPuntaje(contextoBuffer);
+
 		// contador que ayuda a contar el tiempo de los fantasmas en su forma debil
-		cont++;
 
 		contexto.clearRect(0,0,canvas.width,canvas.height);
 		contexto.drawImage(buffer, 0, 0);
-		setTimeout("run()",10);
 		
-	}else{
+	}
+
+	if(gameover){
 		// Game over
 		if(pacman.vidas > 1){
 			pacman.vidas--;
 			jugando = true;
+			gameover = false;
 			reiniciar();
 			mensaje = "Te quedan "+pacman.vidas+" vidas";
 			alert(mensaje);
-			run();
 		}else{
-			juego = false;
-			mensaje = "Game over! Tu puntaje fue: "+puntaje;
-			alert(mensaje);
-
-			mensaje = "Quieres volver a jugar?";
-			var opc = confirm(mensaje);
-
-			juego = true;
+			jugando = false;
 			reiniciar();
 			pacman.vidas = 4;
 			comida.reiniciar();
-			puntaje = 0;
-			
-			if(opc){
-				menu = false;	
-			}else{
-				menu = true;
-			}
-			run();
+				
+			menu = false;
+			gameover = false;
+			puntajeFinal = true;
 		}
 	}
-	
+
+	if(puntajeFinal){
+		contextoBuffer.clearRect(0,0,buffer.width,buffer.height);
+
+		bloques.pintarMapa(contextoBuffer);
+		comida.ponerComida(contextoBuffer);
+		pacman.pintarPacman(contextoBuffer);
+
+		ponerMenu(contextoBuffer, false);
+		$('#micanvas').click(function(){
+			menu = true;
+			puntajeFinal = false;
+			punateje = 0;
+			cont = 0;
+
+			// Capturar puntaje y guardar
+		});
+		
+		contexto.clearRect(0,0,canvas.width,canvas.height);
+		contexto.drawImage(buffer, 0, 0);	
+	}
+
+	cont++;
+	setTimeout("run()",10);
 }
 
 function reiniciar(){
@@ -160,7 +186,7 @@ function ponerPuntaje(context){
 	context.fillText(puntaje, 200, 530);
 }
 
-function ponerMenu(context){
+function ponerMenu(context, main){
 	context.fillStyle = "rgba(0, 0, 0, 0.8)";
 	context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -170,8 +196,14 @@ function ponerMenu(context){
 
 	context.fillStyle = "yellow";
 	context.font = "bold 20px sans-serif";
-	if(cont % 50 < 25)
-		context.fillText("Clic para empezar", 130, 350);
+	if(main){
+		if(cont % 50 < 25)
+			context.fillText("Clic para empezar", 130, 350);
+	}else{
+		context.fillText("Puntaje: "+puntaje, 140, 320);
+		if(cont % 50 < 25)
+			context.fillText("Clic para volver a jugar", 110, 350);
+	}
 }
 
 document.addEventListener("keydown",capturaTeclado);
