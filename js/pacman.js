@@ -43,6 +43,12 @@ function Pacman(){
 				if(this.pacDireccion == 3) this.pos_pacman[1]+=2;
 			}
 		}
+
+		if(this.pos_pacman[0] < -32){
+			this.pos_pacman[0] = 448;
+		}else if(this.pos_pacman[0] > 448){
+			this.pos_pacman[0] = -32;
+		}
 	}
 
 	this.actualizar = function(direccion){
