@@ -81,6 +81,33 @@ function Bloques(){
 
 		return false;	
 	}
+
+	this.colisionLateral = function(pos, direccion){
+		for(var i=0; i<this.bloques.length; i++){
+			if(direccion == 0){
+				if(pos[0]+this.tam_bloque*2 == this.bloques[i][0] && pos[1] == this.bloques[i][1]){
+					return true;
+				}
+			}
+			if(direccion == 1){
+				if(pos[0]-this.tam_bloque == this.bloques[i][0] && pos[1] == this.bloques[i][1]){
+					return true;
+				}
+			}
+			if(direccion == 2){
+				if(pos[0] == this.bloques[i][0] && pos[1]-this.tam_bloque == this.bloques[i][1]){
+					return true;
+				}
+			}
+			if(direccion == 3){
+				if(pos[0] == this.bloques[i][0] && pos[1]+this.tam_bloque*2 == this.bloques[i][1]){
+					return true;
+				}
+			}
+		}
+
+		return false;	
+	}
 }
 
 

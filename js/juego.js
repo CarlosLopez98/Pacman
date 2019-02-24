@@ -22,7 +22,7 @@ function inicio(){
 
 	bloques = new Bloques();
 	pacman = new Pacman();
-	fantasmas = [new Fantasma('rojo'),new Fantasma('rosa'),new Fantasma('azul')];
+	fantasmas = [new Fantasma('rojo'),new Fantasma('rosa'),new Fantasma('azul'), new Fantasma('naranja')];
 	comida = new Food();
 
 	menu = true;

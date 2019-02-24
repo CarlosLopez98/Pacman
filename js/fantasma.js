@@ -27,6 +27,14 @@ function Fantasma(color){
 			[[4,6],[5,6]], //arriba
 			[[6,6],[7,6]]  //abajo
 		];
+	}else if(color == 'naranja'){
+		this.pos_fantasma = [192,224];
+		this.fantasma = [
+			[[0,7],[1,7]], //derecha
+			[[2,7],[3,7]], //izquierda
+			[[4,7],[5,7]], //arriba
+			[[6,7],[7,7]]  //abajo
+		];
 	}
 
 	this.fanDireccion = 0;
