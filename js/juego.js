@@ -2,6 +2,7 @@ var jugando;
 var menu;
 var gameover;
 var puntajeFinal;
+var teclaD;
 var mensaje;
 var cont;
 
@@ -135,6 +136,7 @@ function run(){
 	}
 
 	if(puntajeFinal){
+		// Se muestra la pantalla de gameover
 		contextoBuffer.clearRect(0,0,buffer.width,buffer.height);
 
 		bloques.pintarMapa(contextoBuffer);
@@ -143,12 +145,14 @@ function run(){
 
 		ponerMenu(contextoBuffer, false);
 		$('#micanvas').click(function(){
+			// Si le dan click al canvas el juego se reinicia
+
+			// Capturar el puntaje y guardarlo
 			menu = true;
 			puntajeFinal = false;
-			punateje = 0;
+			puntaje = 0;
 			cont = 0;
 
-			// Capturar puntaje y guardar
 		});
 		
 		contexto.clearRect(0,0,canvas.width,canvas.height);
